@@ -1,6 +1,6 @@
 const express = require('express')
 const path = require('path')
-const theMind = require('./theMind')
+// const theMind = require('./theMind')
 
 const app = express()
 const server = app.listen(process.env.PORT || 8080, () => {
@@ -19,5 +19,10 @@ app.use(express.static(path.join(__dirname, 'public')))
 io.on('connection', function (socket) {
   console.log('Client connected')
   socket.emit('Connected', { message: 'Oh hi Mark' })
-  theMind.startGame(io, socket)
+  // theMind.startGame(io, socket)
+  socket.on('reply', () => {
+    console.log('Reply received')
+  })
+  socket.on('disconnect', () =>
+  console.log('disconnected'))
 })
