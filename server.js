@@ -13,23 +13,22 @@ let rooms = 0
 
 app.use(express.static(path.join(__dirname, 'public')))
 
-// app.get('/', function (req, res) {
-//   res.send('Hello world')
-//   res.sendFile(path.join(__dirname, 'public', 'index.html'))
-// })
-
 io.on('connection', function (socket) {
   console.log('Client connected')
+
   socket.emit('Connected', { message: 'Oh hi Mark' })
   // theMind.startGame(io, socket)
+
   socket.on('reply', () => {
     console.log('Reply received')
   })
+
   socket.on('disconnect', () =>
     console.log('disconnected'))
+
   socket.on('createGame', function (data) {
     socket.join('room-' + ++rooms)
-    socket.emit('newGame', {name: data.name, room: 'room-' + rooms})
+    socket.emit('newGame', { name: data.name, room: 'room-' + rooms })
   })
 
   socket.on('joinGame', function (data) {
