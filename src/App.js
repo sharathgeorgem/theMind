@@ -39,11 +39,15 @@ class App extends Component {
       this.setState({game: {roomId: data.room}})
       // this.game.displayBoard(message)
     })
-    this.socket.on('player2', data => {
-      console.log('Player2 is ', data.name)
-      console.log('Room id is ', data.room)
+    this.socket.on('player1', data => {
+      let message = 'Hello, ' + this.state.name
+      console.log(message)
     })
-  } 
+    this.socket.on('player2', data => {
+      let message = 'Hello, ' + this.state.name
+      console.log(message)
+    })
+  }
   handleNewPlayer (event) {
     this.setState({name: event.target.value})
   }
