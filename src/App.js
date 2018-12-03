@@ -21,8 +21,7 @@ class App extends Component {
     // }
     // IO.init()
     this.socket = openSocket.connect('http://localhost:8080')
-    this.socket.on('Connected', () =>
-      this.socket.emit('reply'))
+    this.socket.on('Connected', () => this.socket.emit('reply'))
   }
   render () {
     return (
