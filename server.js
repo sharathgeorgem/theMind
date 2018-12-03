@@ -27,13 +27,19 @@ io.on('connection', function (socket) {
     console.log('disconnected'))
 
   socket.on('createGame', function (data) {
+    console.log('In createGame server')
     socket.join('room-' + ++rooms)
+    console.log('The room id in createGame server is ' + rooms)
     socket.emit('newGame', { name: data.name, room: 'room-' + rooms })
   })
 
   socket.on('joinGame', function (data) {
-    var room = io.nsps['/'].adapter.rooms[data.room]
+    console.log('In joinGame server')
+    console.log('The room id in joinGame server is ' + data.room)
+    let room = io.of['/'].adapter.rooms[data.room]
+    console.log('The adapter room is ' + room)
     if (room && room.length === 1) {
+      console.log('Inside the if condition')
       socket.join(data.room)
       socket.broadcast.to(data.room).emit('player1', {})
       socket.emit('player2', { name: data.name, room: data.room })
