@@ -34,20 +34,16 @@ io.on('connection', function (socket) {
   })
 
   socket.on('joinGame', function (data) {
-    console.log('In joinGame server')
-    console.log('The room id in joinGame server is ' + data.room)
-    console.log('io is ', io)
-    console.log('io.nsps is ', io.nsps['/'])
-    console.log('the adapter is ', io.nsps['/'].adapter)
-    console.log('The rooms are ', io.nsps['/'].adapter.rooms[data.room])
     let room = io.nsps['/'].adapter.rooms[data.room]
-    console.log('The adapter room is ' + room)
+    console.log('The adapter room is ', room)
     if (room && room.length === 1) {
       console.log('Inside the if condition')
       socket.join(data.room)
       socket.broadcast.to(data.room).emit('player1', {})
       socket.emit('player2', { name: data.name, room: data.room })
+      io.in(data.room).emit('startGame')
     } else {
+      socket.emit('startGame')
       socket.emit('err', {message: 'Sorry, The room is full!'})
     }
   })

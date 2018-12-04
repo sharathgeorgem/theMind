@@ -8,6 +8,8 @@ class App extends Component {
     this.state = {
       name: '',
       roomToJoin: '',
+      err: '',
+      playersReady: false,
       player: {
         name: '',
         type: '',
@@ -34,7 +36,7 @@ class App extends Component {
     this.socket.on('newGame', (data) => {
       console.log('Player1 is ', data.name)
       console.log('Room id is ', data.room)
-      let message = 'Hello, ' + data.name + '. Please ask your friend to enter Game ID: ' + data.room + '. Waiting for player 2...'
+      let message = 'Hello, ' + data.name + '. Game ID: ' + data.room + '. Waiting for player 2..'
       console.log('The message is ', message)
       this.setState({game: {roomId: data.room}})
       // this.game.displayBoard(message)
@@ -46,6 +48,12 @@ class App extends Component {
     this.socket.on('player2', data => {
       let message = 'Hello, ' + this.state.name
       console.log(message)
+    })
+    this.socket.on('startGame', () => {
+      this.setState({playersReady: true})
+    })
+    this.socket.on('err', (data) => {
+      this.setState({err: data.message})
     })
   }
   handleNewPlayer (event) {
@@ -68,25 +76,33 @@ class App extends Component {
     this.setState({player: {type: this.state.playerTwo}})
   }
   render () {
+    let display = (!this.state.playersReady)
+      ? (<div className='menu'>
+        <h1>The Mind</h1>
+        <h3>How To Play</h3>
+        <ol>
+          <li>Player 1: Create a new game by entering the username</li>
+          <li>Player 2: Enter another username and the room id that is displayed on first window.</li>
+          <li>Click on join game. </li>
+        </ol>
+        <h4>Create a new Game</h4>
+        <input type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
+        <button id='new' onClick={this.createGame}>New Game</button>
+        <br />
+        <h4>Join an existing game</h4>
+        <input type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
+        <input type='text' onChange={this.handleJoinRoom} placeholder='Enter Game ID' />
+        <button id='join' onClick={this.joinGame}>Join Game</button>
+      </div>)
+      : (this.state.err)
+        ? <h2>{this.state.err} {this.state.name}</h2> : (
+          <div className='board'>
+            <h1>Board</h1> :
+            <h2>Hello {this.state.name}.</h2>
+          </div>)
     return (
       <div className='App'>
-        <div className='menu'>
-          <h1>The Mind</h1>
-          <h3>How To Play</h3>
-          <ol>
-            <li>Player 1: Create a new game by entering the username</li>
-            <li>Player 2: Enter another username and the room id that is displayed on first window.</li>
-            <li>Click on join game. </li>
-          </ol>
-          <h4>Create a new Game</h4>
-          <input type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
-          <button id='new' onClick={this.createGame}>New Game</button>
-          <br />
-          <h4>Join an existing game</h4>
-          <input type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
-          <input type='text' onChange={this.handleJoinRoom} placeholder='Enter Game ID' />
-          <button id='join' onClick={this.joinGame}>Join Game</button>
-        </div>
+        {display}
       </div>
     )
   }
