@@ -9,7 +9,7 @@ class App extends Component {
       name: '',
       roomToJoin: '',
       err: '',
-      playersReady: false,
+      playerReady: false,
       player: {
         name: '',
         type: '',
@@ -26,6 +26,7 @@ class App extends Component {
     this.joinGame = this.joinGame.bind(this)
     this.handleNewPlayer = this.handleNewPlayer.bind(this)
     this.handleJoinRoom = this.handleJoinRoom.bind(this)
+    this.handleMouseMove = this.handleMouseMove.bind(this)
   }
   componentDidMount () {
     this.socket = openSocket.connect('http://localhost:8080')
@@ -50,10 +51,13 @@ class App extends Component {
       console.log(message)
     })
     this.socket.on('startGame', () => {
-      this.setState({playersReady: true})
+      this.setState({playerReady: true})
     })
     this.socket.on('err', (data) => {
       this.setState({err: data.message})
+    })
+    this.socket.on('onMouseMove', (data) => {
+      console.log('The received movements are ', data.mouseX, data.mouseY)
     })
   }
   handleNewPlayer (event) {
@@ -75,8 +79,12 @@ class App extends Component {
     this.setState({player: {name: this.state.name}})
     this.setState({player: {type: this.state.playerTwo}})
   }
+  handleMouseMove (e) {
+    this.socket.emit('onMouseMove', {room: this.state.roomToJoin, mouseX: e.nativeEvent.clientX, mouseY: e.nativeEvent.clientY})
+    // console.log('onMouseMove', e.nativeEvent.clientX, e.nativeEvent.clientY)
+  }
   render () {
-    let display = (!this.state.playersReady)
+    let display = (!this.state.playerReady)
       ? (<div className='menu'>
         <h1>The Mind</h1>
         <h3>How To Play</h3>
@@ -96,8 +104,8 @@ class App extends Component {
       </div>)
       : (this.state.err)
         ? <h2>{this.state.err} {this.state.name}</h2> : (
-          <div className='board'>
-            <h1>Board</h1> :
+          <div className='board' onMouseMove={this.handleMouseMove}>
+            <h1>Board</h1>
             <h2>Hello {this.state.name}.</h2>
           </div>)
     return (

@@ -23,8 +23,9 @@ io.on('connection', function (socket) {
     console.log('Reply received')
   })
 
-  socket.on('disconnect', () =>
-    console.log('disconnected'))
+  socket.on('disconnect', () => {
+    console.log('disconnected')
+  })
 
   socket.on('createGame', function (data) {
     console.log('In createGame server')
@@ -37,7 +38,6 @@ io.on('connection', function (socket) {
     let room = io.nsps['/'].adapter.rooms[data.room]
     console.log('The adapter room is ', room)
     if (room && room.length === 1) {
-      console.log('Inside the if condition')
       socket.join(data.room)
       socket.broadcast.to(data.room).emit('player1', {})
       socket.emit('player2', { name: data.name, room: data.room })
@@ -46,6 +46,10 @@ io.on('connection', function (socket) {
       socket.emit('startGame')
       socket.emit('err', {message: 'Sorry, The room is full!'})
     }
+  })
+
+  socket.on('onMouseMove', data => {
+    socket.to(data.room).emit('onMouseMove', data)
   })
 
   socket.on('playTurn', function (data) {
