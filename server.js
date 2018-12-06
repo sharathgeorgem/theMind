@@ -39,7 +39,7 @@ io.on('connection', function (socket) {
     console.log('The adapter room is ', room)
     if (room && room.length === 1) {
       socket.join(data.room)
-      socket.broadcast.to(data.room).emit('player1', {})
+      socket.broadcast.to(data.room).emit('player1', {room: data.room})
       socket.emit('player2', { name: data.name, room: data.room })
       io.in(data.room).emit('startGame')
     } else {
@@ -49,6 +49,7 @@ io.on('connection', function (socket) {
   })
 
   socket.on('onMouseMove', data => {
+    console.log('SERVER IS SENDING TO ', data.room)
     socket.to(data.room).emit('onMouseMove', data)
   })
 

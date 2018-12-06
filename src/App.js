@@ -40,14 +40,17 @@ class App extends Component {
       let message = 'Hello, ' + data.name + '. Game ID: ' + data.room + '. Waiting for player 2..'
       console.log('The message is ', message)
       this.setState({game: {roomId: data.room}})
+      console.log('!!!!!ROOM ID IS NEW GAME!!!!', this.state.game.roomId)
       // this.game.displayBoard(message)
     })
     this.socket.on('player1', data => {
       let message = 'Hello, ' + this.state.name
+      this.setState({game: {roomId: data.room}})
       console.log(message)
     })
     this.socket.on('player2', data => {
       let message = 'Hello, ' + this.state.name
+      this.setState({game: {roomId: data.room}})
       console.log(message)
     })
     this.socket.on('startGame', () => {
@@ -80,7 +83,7 @@ class App extends Component {
     this.setState({player: {type: this.state.playerTwo}})
   }
   handleMouseMove (e) {
-    this.socket.emit('onMouseMove', {room: this.state.roomToJoin, mouseX: e.nativeEvent.clientX, mouseY: e.nativeEvent.clientY})
+    this.socket.emit('onMouseMove', {room: this.state.game.roomId, mouseX: e.nativeEvent.clientX, mouseY: e.nativeEvent.clientY})
     // console.log('onMouseMove', e.nativeEvent.clientX, e.nativeEvent.clientY)
   }
   render () {
