@@ -1,6 +1,9 @@
 import React, { Component } from 'react'
-import './App.css'
+import {BrowserRouter, Route} from 'react-router-dom'
 import openSocket from 'socket.io-client'
+import Level from './Level'
+import Board from './Board'
+import './App.css'
 
 class App extends Component {
   constructor (props) {
@@ -29,7 +32,7 @@ class App extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
   }
   componentDidMount () {
-    this.socket = openSocket.connect('http://localhost:8080')
+    this.socket = openSocket.connect('http://192.168.0.8:8080')
     this.socket.on('Connected', (data) => {
       console.log('data is ' + JSON.stringify(data))
       this.socket.emit('reply')
@@ -68,7 +71,6 @@ class App extends Component {
   }
   handleJoinRoom (event) {
     this.setState({roomToJoin: event.target.value})
-    console.log('Setting room to join', this.state.roomToJoin)
   }
   createGame () {
     console.log('In createGame client')
@@ -90,27 +92,28 @@ class App extends Component {
     let display = (!this.state.playerReady)
       ? (<div className='menu'>
         <h1>The Mind</h1>
-        <h3>How To Play</h3>
         <ol>
           <li>Player 1: Create a new game by entering the username</li>
           <li>Player 2: Enter another username and the room id that is displayed on first window.</li>
           <li>Click on join game. </li>
         </ol>
         <h4>Create a new Game</h4>
-        <input type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
+        <input className='input' type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
         <button id='new' onClick={this.createGame}>New Game</button>
         <br />
         <h4>Join an existing game</h4>
-        <input type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
-        <input type='text' onChange={this.handleJoinRoom} placeholder='Enter Game ID' />
+        <input className='input' type='text' onChange={this.handleNewPlayer} placeholder='Enter your name' />
+        <input className='input' type='text' onChange={this.handleJoinRoom} placeholder='Enter Game ID' />
         <button id='join' onClick={this.joinGame}>Join Game</button>
       </div>)
       : (this.state.err)
         ? <h2>{this.state.err} {this.state.name}</h2> : (
-          <div className='board' onMouseMove={this.handleMouseMove}>
-            <h1>Board</h1>
-            <h2>Hello {this.state.name}.</h2>
-          </div>)
+          <BrowserRouter basename={process.env.PUBLIC_URL}>
+            <div>
+              <Route exact path='/' render={props => <Level info={this.state} {...props} />} />
+              <Route path='/level1' render={props => <Board info={this.state} mouse={this.handleMouseMove} {...props} />} />
+            </div>
+          </BrowserRouter>)
     return (
       <div className='App'>
         {display}
@@ -120,20 +123,3 @@ class App extends Component {
 }
 
 export default App
-
-// var IO = {
-//   init: function () {
-//     IO.socket = io()
-//     IO.bindEvents()
-//   },
-//   bindEvents: function () {
-//     IO.socket.on('Connected', IO.onConnected)
-//     IO.socket.on('newGame', IO.onNewGame)
-//     IO.socket.on('hostRoomFull', IO.onHostRoomFull)
-//     IO.socket.on('newRound', IO.onNewRound)
-//   },
-//   onConnected: function () {
-//     console.log('Got connected msg from server ', IO.socket.sessionId)
-//   }
-// }
-// IO.init()

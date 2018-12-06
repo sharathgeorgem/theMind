@@ -7,7 +7,7 @@ const server = app.listen(8080, () => {
   console.log('Server running')
 })
 
-const io = require('socket.io')(server)
+const io = require('socket.io')(server, {origins: '*:*'})
 
 let rooms = 0
 
@@ -49,7 +49,6 @@ io.on('connection', function (socket) {
   })
 
   socket.on('onMouseMove', data => {
-    console.log('SERVER IS SENDING TO ', data.room)
     socket.to(data.room).emit('onMouseMove', data)
   })
 
