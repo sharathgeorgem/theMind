@@ -32,7 +32,7 @@ class App extends Component {
     this.handleMouseMove = this.handleMouseMove.bind(this)
   }
   componentDidMount () {
-    this.socket = openSocket.connect('http://192.168.0.8:8080')
+    this.socket = openSocket.connect('http://192.168.0.103:8080')
     this.socket.on('Connected', (data) => {
       console.log('data is ' + JSON.stringify(data))
       this.socket.emit('reply')

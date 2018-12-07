@@ -1,0 +1,45 @@
+.table {
+  display: flex;
+}
+
+.deck {
+  max-width: 100%;
+  max-height: 100%;
+  float: none;
+  margin: auto 30px;
+  width: 400px;
+  height:400px;
+  background-image: -moz-linear-gradient(top left, rgba(29, 38, 113, 0.60), rgba(195, 55, 100, 0.60));
+  background-image: -ms-linear-gradient(top left, rgba(29, 38, 113, 0.60), rgba(195, 55, 100, 0.60));
+  background-image: -webkit-linear-gradient(top left, rgba(29, 38, 113, 0.60), rgba(195, 55, 100, 0.60));
+  background-image: -o-linear-gradient(top left, rgba(29, 38, 113, 0.60), rgba(195, 55, 100, 0.60));
+  background-image: linear-gradient(to bottom right, rgba(29, 38, 113, 0.60), rgba(195, 55, 100, 0.60));
+  background-size: auto;
+}
+
+.card {
+  display: relative;
+  margin: 80px 30px;
+  width: 80px;
+  height:120px;
+  background: linear-gradient(45deg, #10abff, #8980F5);
+  color: white;
+  float:left;
+  font: inherit;
+  border-radius: 2px;
+}
+
+.dragList {}
+
+.dropList {
+  display: relative;
+  margin: 50px 30px;
+  width: 120px;
+  height:170px;
+  background: linear-gradient(45deg, #4d1035, #000000);
+  opacity: 0.5;
+  color: white;
+  float:right;
+  font: inherit;
+  border-radius: 2px;
+}
